@@ -1,0 +1,22 @@
+services:
+  kafka:
+    image: bitnamilegacy/kafka:latest
+    ports:
+      - "9092:9092"
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CFG_CREATE_TOPICS="topic:1:1"
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+  spring-boot-app:
+    build: ./spring-boot-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - kafka
+      - postgres
