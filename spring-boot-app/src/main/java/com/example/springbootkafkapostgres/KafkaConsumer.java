@@ -1,20 +1,22 @@
 package com.example.springbootkafkapostgres;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
+@AllArgsConstructor
+@Slf4j
 public class KafkaConsumer {
 
     private final MessageRepository messageRepository;
 
-    public KafkaConsumer(MessageRepository messageRepository) {
-        this.messageRepository = messageRepository;
-    }
-
-    @KafkaListener(topics = "topic", groupId = "my-group")
-    public void consume(String message) {
-        System.out.println("Consumed message: " + message);
-        messageRepository.save(new Message(message));
+    @KafkaListener(topics = "new-topic", groupId = "my-group")
+    public void consume(Message message) {
+        log.info("Consumed message: {}", message);
+        messageRepository.save(new MessageLog(null, message, LocalDateTime.now()));
     }
 }
